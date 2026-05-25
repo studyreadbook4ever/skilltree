@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branchwise • Knowledge Tree Skill</title>
+<style>
+:root{--bg:#f8f7f4;--card:#fff;--accent:#6366f1;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+.container{max-width:1060px;margin:0 auto;padding:20px 14px}
+header{text-align:center;padding:24px 0 16px}
+h1{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+.tagline{color:var(--muted);font-size:.98rem;margin-top:6px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.section{margin-bottom:36px}
+h2{font-size:1.25rem;margin-bottom:12px;font-weight:600}
+.chapter{cursor:pointer;transition:all .15s}
+.chapter:hover{border-color:var(--accent)}
+.chapter h3{color:var(--accent);font-size:1.02rem;margin-bottom:4px}
+.subtopic{background:#fafafa;border:1px solid var(--border);border-radius:7px;padding:11px 13px;margin-bottom:6px;cursor:pointer;transition:.15s}
+.subtopic:hover{background:#f0f0ff;border-color:var(--accent)}
+.subtopic:last-child{margin-bottom:0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:100}
+.modal-content{background:#fff;max-width:480px;width:92%;border-radius:12px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.close{font-size:1.5rem;cursor:pointer;color:#9ca3af;line-height:1}
+#tree-root{text-align:center;margin-bottom:24px}
+.root-card{display:inline-block;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:14px 28px;border-radius:9999px;font-size:1.15rem;font-weight:600;box-shadow:0 3px 12px rgba(99,102,241,.3)}
+.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+footer{text-align:center;padding:24px 0 8px;color:var(--muted);font-size:.85rem}
+.prompt-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:13px;font-family:ui-monospace,monospace;font-size:.82rem;white-space:pre-wrap;line-height:1.35}
+.copy-btn{background:var(--accent);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-size:.88rem;cursor:pointer;margin-top:6px}
+.copy-btn:active{background:#4f46e5}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Branchwise</h1>
+<p class="tagline">1 topic → 3 chapters → 9 subtopics → 27 focused AI prompts.<br>Deep learning. Minimal tokens.</p>
+</header>
+
+<section class="section">
+<div class="card" style="text-align:center;padding:22px 18px">
+<p style="max-width:580px;margin:0 auto;color:#374151;font-size:.95rem">Structured breakdown lets humans guide AI for deeper understanding with far fewer queries. Branchwise turns any topic into a compact, actionable 40-node knowledge tree.</p>
+</div>
+</section>
+
+<section class="section">
+<h2 style="text-align:center">Live Demo: Building AI Agents</h2>
+<div id="tree-root"><div class="root-card">Building AI Agents</div></div>
+
+<div class="chapters">
+<div class="card chapter" onclick="showSubtopics(0)">
+<h3>1. Core Architecture</h3>
+<p style="font-size:.88rem;color:#4b5563">Fundamental blocks for reliable, capable agents.</p>
+<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
+</div>
+<div class="card chapter" onclick="showSubtopics(1)">
+<h3>2. Production Readiness</h3>
+<p style="font-size:.88rem;color:#4b5563">Robust, cost-efficient, observable agents.</p>
+<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
+</div>
+<div class="card chapter" onclick="showSubtopics(2)">
+<h3>3. Advanced Patterns</h3>
+<p style="font-size:.88rem;color:#4b5563">Multi-agent, human oversight &amp; scaling.</p>
+<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
+</div>
+</div>
+
+<div id="subtopics-panel" style="display:none;margin-top:20px">
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<h3 id="chapter-title" style="margin:0;font-size:1.1rem"></h3>
+<button onclick="hideSubtopics()" style="background:none;border:1px solid #e5e7eb;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:.8rem">Close</button>
+</div>
+<div id="subtopics-list"></div>
+</div>
+</div>
+</section>
+
+<section class="section">
+<h2 style="text-align:center">Create your own for any topic</h2>
+<div class="card">
+<p style="margin-bottom:8px;color:#374151;font-size:.93rem">Copy this prompt, replace <strong>[YOUR TOPIC]</strong>, paste into Grok/Claude/GPT.</p>
+<div class="prompt-box" id="master-prompt">You are an expert knowledge architect for efficient human-first learning.
+
+Break "[YOUR TOPIC]" into exactly:
+- 3 major chapters (compact)
+- 3 subtopics per chapter
+- 3 study materials per subtopic (27 total)
+
+For each of the 27 study materials, provide 3 specific, high-signal questions the user can ask an AI.
+
+Return ONLY valid JSON:
+
+{
+  "topic": "[YOUR TOPIC]",
+  "chapters": [{
+    "title": "Chapter Title",
+    "description": "Short sentence",
+    "subtopics": [{
+      "title": "Subtopic",
+      "description": "Short sentence",
+      "study_materials": [{
+        "title": "Focus title",
+        "ai_prompts": ["Q1", "Q2", "Q3"]
+      }, {...}, {...}]
+    }, {...}, {...}]
+  }, {...}, {...}]
+}
+
+Keep everything extremely concise and practical.</div>
+<button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
+</div>
+</section>
+
+<footer>
+<p>Branchwise — Lightweight skill for focused, token-efficient learning.<br>Made for humans • MIT License • Star on GitHub if useful</p>
+</footer>
+</div>
+
+<div id="prompt-modal" class="modal" onclick="if(event.target.id==='prompt-modal')hideModal()">
+<div class="modal-content" onclick="event.stopImmediatePropagation()">
+<div class="modal-header">
+<h3 id="modal-title" style="margin:0;font-size:1.05rem"></h3>
+<span class="close" onclick="hideModal()">&times;</span>
+</div>
+<p style="color:#4b5563;margin-bottom:10px;font-size:.9rem">Ask AI using these prompts:</p>
+<ul id="modal-prompts" style="list-style:none;margin:0;padding:0"></ul>
+</div>
+</div>
+
+<script>
+const d={topic:"Building AI Agents",chapters:[{title:"Core Architecture",description:"Fundamental blocks for reliable agents.",subtopics:[{title:"Agent Loop & Reasoning",description:"How agents think and iterate.",study_materials:[{title:"ReAct vs Plan-Execute",ai_prompts:["Compare ReAct and Plan-and-Execute with pros/cons","When to use each in production?","Design a hybrid reasoning loop"]},{title:"Chain-of-Thought quality",ai_prompts:["Detect and fix hallucinated reasoning steps","Improve reasoning consistency with prompts","Structured output parsing for long chains"]},{title:"Tool selection & orchestration",ai_prompts:["Design scalable tool registry (50+ tools)","Dynamic tool selection strategies","Error handling for tool failures"]}]},{title:"Tool Use & Function Calling",description:"Reliable external system interaction.",study_materials:[{title:"Robust function schemas",ai_prompts:["Minimize LLM schema violations","Handle optional vs required params","Versioning tool definitions"]},{title:"Parallel tool execution",ai_prompts:["When to run tools in parallel safely","Manage dependencies between calls","Timeout and retry strategies"]},{title:"Tool result validation",ai_prompts:["Validate and sanitize tool outputs","Build guardrails around results","Handle partial or ambiguous responses"]}]},{title:"Memory & State",description:"Persistent, useful memory design.",study_materials:[{title:"Short vs long-term memory",ai_prompts:["Compare vector, graph and KV stores","Memory retrieval best practices","Forgetting and summarization strategies"]},{title:"State compression",ai_prompts:["Summarize long trajectories effectively","Hierarchical vs flat memory tradeoffs","Maintain coherence across turns"]},{title:"Persistent stores",ai_prompts:["Choose Redis/Pinecone/Neo4j/SQLite","Design schemas for fast + semantic search","Privacy and retention policies"]}] }]},{title:"Production Readiness",description:"Robust, efficient, observable agents.",subtopics:[{title:"Reliability & Errors",description:"Agents that don't break in production.",study_materials:[{title:"Graceful degradation",ai_prompts:["Design fallback strategies for failures","Circuit breakers and retry logic","Safe defaults in uncertain environments"]},{title:"Self-correction",ai_prompts:["Detect and recover from own mistakes","Effective reflection loops without waste","When self-correction helps vs wastes tokens"]},{title:"Input validation",ai_prompts:["Protect against prompt injection","Validate goals before execution","Safe execution sandboxes"]}]},{title:"Cost Optimization",description:"Maximum value per dollar.",study_materials:[{title:"Smart model routing",ai_prompts:["Route simple tasks to cheap models","Measure cost per successful task","Caching patterns to cut tokens"]},{title:"Context management",ai_prompts:["Keep context under control","Summarization vs truncation tradeoffs","Design agents that stay in budget"]},{title:"Evaluation loops",ai_prompts:["Lightweight evaluation harnesses","Measure quality + cost together","Use synthetic data for improvement"]}]},{title:"Evaluation & Monitoring",description:"Know if your agent is good.",study_materials:[{title:"Success metrics",ai_prompts:["Design meaningful success metrics","Reproducible agent benchmarks","Balance auto metrics with human eval"]},{title:"Observability",ai_prompts:["Best tracing tools (LangSmith etc.)","What signals to log for debugging","Real-time performance + cost dashboards"]},{title:"Continuous improvement",ai_prompts:["Turn failures into training data","Collect real user feedback","Version control and A/B test prompts"]}] }]},{title:"Advanced Patterns",description:"Multi-agent, human oversight, scaling.",subtopics:[{title:"Multi-Agent Systems",description:"When one agent isn't enough.",study_materials:[{title:"Orchestration patterns",ai_prompts:["Compare hierarchical vs peer-to-peer topologies","Prevent communication explosion","Clear role definitions and handoffs"]},{title:"Specialist vs generalist",ai_prompts:["Narrow agents vs one powerful agent","Make specialists collaborate","Context sharing trade-offs"]},{title:"Conflict resolution",ai_prompts:["Resolve conflicting plans between agents","Voting or debate mechanisms","Maintain coherent team goals"]}]},{title:"Human-in-the-Loop",description:"Humans where it matters most.",study_materials:[{title:"Intervention points",ai_prompts:["Best places for human approval","Low-friction approval workflows","Make agents ask good questions"]},{title:"Trust & transparency",ai_prompts:["Communicate reasoning and uncertainty","Interfaces to understand agent actions","Useful audit logs for debugging"]},{title:"Escalation & override",ai_prompts:["Safe human takeover patterns","Graceful handoff without context loss","Confidence scoring for asking help"]}]},{title:"Deployment & Scaling",description:"Run reliably at scale.",study_materials:[{title:"Infrastructure",ai_prompts:["Serverless vs container trade-offs","Handle stateful agents in stateless envs","Cost-effective scaling strategies"]},{title:"Security & access",ai_prompts:["Least-privilege design for actions","Safe internal tool access","Auditing and compliance needs"]},{title:"Monitoring at scale",ai_prompts:["Alerting for health, cost and failures","Detect behavior drift over time","Rollback strategies for prompt changes"]}] }]}]};
+
+let curChap=null;
+
+function showSubtopics(i){
+  const ch=d.chapters[i]; curChap=i;
+  document.getElementById('chapter-title').innerHTML=`${i+1}. ${ch.title}`;
+  const c=document.getElementById('subtopics-list'); c.innerHTML='';
+  ch.subtopics.forEach((s,si)=>{
+    const el=document.createElement('div');
+    el.className='subtopic';
+    el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><strong style="font-size:.97rem">${s.title}</strong><div style="color:#6b7280;font-size:.85rem;margin-top:2px">${s.description}</div></div><div style="color:#6366f1;font-size:.7rem;white-space:nowrap;padding-left:8px">3 prompts →</div></div>`;
+    el.onclick=()=>showPrompts(i,si);
+    c.appendChild(el);
+  });
+  document.getElementById('subtopics-panel').style.display='block';
+  document.getElementById('subtopics-panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function hideSubtopics(){document.getElementById('subtopics-panel').style.display='none'}
+function showPrompts(ci,si){
+  const m=d.chapters[ci].subtopics[si];
+  document.getElementById('modal-title').innerText=m.title;
+  const ul=document.getElementById('modal-prompts'); ul.innerHTML='';
+  m.ai_prompts.forEach((p,idx)=>{
+    const li=document.createElement('li');
+    li.style.cssText='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 11px;margin-bottom:5px;font-size:.88rem';
+    li.innerHTML=`<strong>${idx+1}.</strong> ${p}`;
+    ul.appendChild(li);
+  });
+  document.getElementById('prompt-modal').style.display='flex';
+}
+function hideModal(){document.getElementById('prompt-modal').style.display='none'}
+function copyPrompt(){
+  const t=document.getElementById('master-prompt').innerText;
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=document.querySelector('.copy-btn');
+    const old=b.innerText; b.innerText='Copied!';
+    setTimeout(()=>b.innerText=old,1600);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    alert('Prompt copied!');
+  });
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const m=document.getElementById('prompt-modal');
+    if(m.style.display==='flex') hideModal();
+    else hideSubtopics();
+  }
+});
+document.getElementById('tree-root').addEventListener('click',hideSubtopics);
+</script>
+</body>
+</html>
