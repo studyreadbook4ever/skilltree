@@ -15,3 +15,5 @@ To make something 'knows', this will take many resource. But we can make 'ready 
 ## Usage
 
 Copy skill.md to any AI and get 'short compacted knowledge' and then you(human) can use it anytime locally!!
+
+## If you want to use this skill for many processes for once, you can give '.css' design that you want for result. It can make token save. 
