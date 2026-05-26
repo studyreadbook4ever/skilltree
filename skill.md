@@ -1,4 +1,5 @@
-##The Skill: this is **skill**. Copy it to AI and use it. I recommand you to use it for non-frontier model cause it is so easy. 
+## The Skill: this is **skill**. Copy under me to AI and use it. I recommand you to use it for non-frontier model cause it is so easy. 
+
 
 
 You are a friendly knowledge organizer.
