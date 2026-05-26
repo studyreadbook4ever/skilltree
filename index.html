@@ -3,187 +3,377 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Branchwise • Knowledge Tree Skill</title>
+<title>Branchwise</title>
 <style>
-:root{--bg:#f8f7f4;--card:#fff;--accent:#6366f1;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
-.container{max-width:1060px;margin:0 auto;padding:20px 14px}
-header{text-align:center;padding:24px 0 16px}
-h1{font-size:2rem;font-weight:700;letter-spacing:-.02em}
-.tagline{color:var(--muted);font-size:.98rem;margin-top:6px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.section{margin-bottom:36px}
-h2{font-size:1.25rem;margin-bottom:12px;font-weight:600}
-.chapter{cursor:pointer;transition:all .15s}
-.chapter:hover{border-color:var(--accent)}
-.chapter h3{color:var(--accent);font-size:1.02rem;margin-bottom:4px}
-.subtopic{background:#fafafa;border:1px solid var(--border);border-radius:7px;padding:11px 13px;margin-bottom:6px;cursor:pointer;transition:.15s}
-.subtopic:hover{background:#f0f0ff;border-color:var(--accent)}
-.subtopic:last-child{margin-bottom:0}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:100}
-.modal-content{background:#fff;max-width:480px;width:92%;border-radius:12px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.close{font-size:1.5rem;cursor:pointer;color:#9ca3af;line-height:1}
-#tree-root{text-align:center;margin-bottom:24px}
-.root-card{display:inline-block;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:14px 28px;border-radius:9999px;font-size:1.15rem;font-weight:600;box-shadow:0 3px 12px rgba(99,102,241,.3)}
-.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-footer{text-align:center;padding:24px 0 8px;color:var(--muted);font-size:.85rem}
-.prompt-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:13px;font-family:ui-monospace,monospace;font-size:.82rem;white-space:pre-wrap;line-height:1.35}
-.copy-btn{background:var(--accent);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-size:.88rem;cursor:pointer;margin-top:6px}
-.copy-btn:active{background:#4f46e5}
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8f5f0; color: #222; margin: 0; padding: 20px; line-height: 1.55; }
+.container { max-width: 980px; margin: 0 auto; }
+h1 { text-align: center; font-size: 2.1rem; margin-bottom: 6px; }
+.subtitle { text-align: center; color: #666; margin-bottom: 36px; font-size: 1.05rem; }
+.card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+h2 { margin-top: 0; font-size: 1.35rem; }
+.skill-box { background: #f4f1e9; padding: 18px; border-radius: 12px; font-size: 0.92rem; white-space: pre-wrap; line-height: 1.5; }
+
+.tab-buttons { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn { padding: 9px 20px; border: 2px solid #444; background: white; border-radius: 9999px; cursor: pointer; font-size: 0.95rem; }
+.tab-btn.active { background: #222; color: white; border-color: #222; }
+
+.tree { max-width: 900px; margin: 0 auto; }
+.root { border: 3px solid #222; border-radius: 14px; padding: 18px; margin-bottom: 16px; background: #fff; text-align: center; }
+.chapter { border: 2px solid #444; border-radius: 12px; margin-bottom: 12px; background: #fff; overflow: hidden; }
+.chapter-header { padding: 14px 16px; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; align-items: center; background: #f8f5f0; }
+.chapter-header:hover { background: #f0e9df; }
+.chapter-content { padding: 0 16px 12px; display: none; }
+.chapter.open .chapter-content { display: block; }
+
+.subtopic { border: 1px solid #666; border-radius: 10px; margin: 8px 0; background: #fff; overflow: hidden; }
+.subtopic-header { padding: 11px 14px; cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
+.subtopic-header:hover { background: #f4ede3; }
+.subtopic-content { padding: 0 14px 10px; display: none; font-size: 0.9rem; color: #444; }
+.subtopic.open .subtopic-content { display: block; }
+
+.leaf { padding: 10px 14px; border-top: 1px solid #ddd; font-size: 0.88rem; color: #444; }
+.leaf:last-child { border-bottom: none; }
+
+.toggle { font-size: 1.1rem; transition: transform 0.2s; }
+.chapter.open .toggle, .subtopic.open .toggle { transform: rotate(180deg); }
 </style>
 </head>
 <body>
 <div class="container">
-<header>
+
 <h1>Branchwise</h1>
-<p class="tagline">1 topic → 3 chapters → 9 subtopics → 27 focused AI prompts.<br>Deep learning. Minimal tokens.</p>
-</header>
+<p class="subtitle">One screen. Full structure. Simple and useful.</p>
 
-<section class="section">
-<div class="card" style="text-align:center;padding:22px 18px">
-<p style="max-width:580px;margin:0 auto;color:#374151;font-size:.95rem">Structured breakdown lets humans guide AI for deeper understanding with far fewer queries. Branchwise turns any topic into a compact, actionable 40-node knowledge tree.</p>
-</div>
-</section>
-
-<section class="section">
-<h2 style="text-align:center">Live Demo: Building AI Agents</h2>
-<div id="tree-root"><div class="root-card">Building AI Agents</div></div>
-
-<div class="chapters">
-<div class="card chapter" onclick="showSubtopics(0)">
-<h3>1. Core Architecture</h3>
-<p style="font-size:.88rem;color:#4b5563">Fundamental blocks for reliable, capable agents.</p>
-<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
-</div>
-<div class="card chapter" onclick="showSubtopics(1)">
-<h3>2. Production Readiness</h3>
-<p style="font-size:.88rem;color:#4b5563">Robust, cost-efficient, observable agents.</p>
-<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
-</div>
-<div class="card chapter" onclick="showSubtopics(2)">
-<h3>3. Advanced Patterns</h3>
-<p style="font-size:.88rem;color:#4b5563">Multi-agent, human oversight &amp; scaling.</p>
-<div style="margin-top:8px;font-size:.75rem;color:#6366f1">Explore 3 subtopics →</div>
-</div>
-</div>
-
-<div id="subtopics-panel" style="display:none;margin-top:20px">
 <div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-<h3 id="chapter-title" style="margin:0;font-size:1.1rem"></h3>
-<button onclick="hideSubtopics()" style="background:none;border:1px solid #e5e7eb;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:.8rem">Close</button>
-</div>
-<div id="subtopics-list"></div>
-</div>
-</div>
-</section>
+  <h2>The Skill</h2>
+  <div class="skill-box">
+You are a friendly knowledge organizer.
 
-<section class="section">
-<h2 style="text-align:center">Create your own for any topic</h2>
+When given a topic, output ONLY one clean HTML file.
+
+Hard rules:
+- Show the entire tree on a single screen using an accordion style (collapsible sections).
+- Structure: 1 root → 3 chapters → 9 subtopics → 27 leaves.
+- Each box must contain a concise but meaningful explanation of roughly 60~80 characters.
+- Because the entire HTML must stay under 14KB, be extremely efficient with wording — short but high-signal.
+- Keep the tone casual, warm, and practical.
+- Use clean accordion interaction so users can expand chapters and subtopics easily.
+
+Generate the HTML for this topic: [INSERT TOPIC HERE]
+  </div>
+</div>
+
 <div class="card">
-<p style="margin-bottom:8px;color:#374151;font-size:.93rem">Copy this prompt, replace <strong>[YOUR TOPIC]</strong>, paste into Grok/Claude/GPT.</p>
-<div class="prompt-box" id="master-prompt">You are an expert knowledge architect for efficient human-first learning.
+  <h2>Interactive Demo (Accordion Style)</h2>
+  <p style="margin-bottom:14px;">Click the headers to expand. All levels are visible in one screen.</p>
+  
+  <div class="tab-buttons">
+    <button class="tab-btn" onclick="switchDemo('korean', this)">Korean Culture</button>
+    <button class="tab-btn" onclick="switchDemo('thermo', this)">Thermodynamics</button>
+    <button class="tab-btn" onclick="switchDemo('habits', this)">Building Good Habits</button>
+  </div>
 
-Break "[YOUR TOPIC]" into exactly:
-- 3 major chapters (compact)
-- 3 subtopics per chapter
-- 3 study materials per subtopic (27 total)
-
-For each of the 27 study materials, provide 3 specific, high-signal questions the user can ask an AI.
-
-Return ONLY valid JSON:
-
-{
-  "topic": "[YOUR TOPIC]",
-  "chapters": [{
-    "title": "Chapter Title",
-    "description": "Short sentence",
-    "subtopics": [{
-      "title": "Subtopic",
-      "description": "Short sentence",
-      "study_materials": [{
-        "title": "Focus title",
-        "ai_prompts": ["Q1", "Q2", "Q3"]
-      }, {...}, {...}]
-    }, {...}, {...}]
-  }, {...}, {...}]
-}
-
-Keep everything extremely concise and practical.</div>
-<button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
-</div>
-</section>
-
-<footer>
-<p>Branchwise — Lightweight skill for focused, token-efficient learning.<br>Made for humans • MIT License • Star on GitHub if useful</p>
-</footer>
+  <div id="demo-area" class="tree"></div>
 </div>
 
-<div id="prompt-modal" class="modal" onclick="if(event.target.id==='prompt-modal')hideModal()">
-<div class="modal-content" onclick="event.stopImmediatePropagation()">
-<div class="modal-header">
-<h3 id="modal-title" style="margin:0;font-size:1.05rem"></h3>
-<span class="close" onclick="hideModal()">&times;</span>
-</div>
-<p style="color:#4b5563;margin-bottom:10px;font-size:.9rem">Ask AI using these prompts:</p>
-<ul id="modal-prompts" style="list-style:none;margin:0;padding:0"></ul>
-</div>
 </div>
 
 <script>
-const d={topic:"Building AI Agents",chapters:[{title:"Core Architecture",description:"Fundamental blocks for reliable agents.",subtopics:[{title:"Agent Loop & Reasoning",description:"How agents think and iterate.",study_materials:[{title:"ReAct vs Plan-Execute",ai_prompts:["Compare ReAct and Plan-and-Execute with pros/cons","When to use each in production?","Design a hybrid reasoning loop"]},{title:"Chain-of-Thought quality",ai_prompts:["Detect and fix hallucinated reasoning steps","Improve reasoning consistency with prompts","Structured output parsing for long chains"]},{title:"Tool selection & orchestration",ai_prompts:["Design scalable tool registry (50+ tools)","Dynamic tool selection strategies","Error handling for tool failures"]}]},{title:"Tool Use & Function Calling",description:"Reliable external system interaction.",study_materials:[{title:"Robust function schemas",ai_prompts:["Minimize LLM schema violations","Handle optional vs required params","Versioning tool definitions"]},{title:"Parallel tool execution",ai_prompts:["When to run tools in parallel safely","Manage dependencies between calls","Timeout and retry strategies"]},{title:"Tool result validation",ai_prompts:["Validate and sanitize tool outputs","Build guardrails around results","Handle partial or ambiguous responses"]}]},{title:"Memory & State",description:"Persistent, useful memory design.",study_materials:[{title:"Short vs long-term memory",ai_prompts:["Compare vector, graph and KV stores","Memory retrieval best practices","Forgetting and summarization strategies"]},{title:"State compression",ai_prompts:["Summarize long trajectories effectively","Hierarchical vs flat memory tradeoffs","Maintain coherence across turns"]},{title:"Persistent stores",ai_prompts:["Choose Redis/Pinecone/Neo4j/SQLite","Design schemas for fast + semantic search","Privacy and retention policies"]}] }]},{title:"Production Readiness",description:"Robust, efficient, observable agents.",subtopics:[{title:"Reliability & Errors",description:"Agents that don't break in production.",study_materials:[{title:"Graceful degradation",ai_prompts:["Design fallback strategies for failures","Circuit breakers and retry logic","Safe defaults in uncertain environments"]},{title:"Self-correction",ai_prompts:["Detect and recover from own mistakes","Effective reflection loops without waste","When self-correction helps vs wastes tokens"]},{title:"Input validation",ai_prompts:["Protect against prompt injection","Validate goals before execution","Safe execution sandboxes"]}]},{title:"Cost Optimization",description:"Maximum value per dollar.",study_materials:[{title:"Smart model routing",ai_prompts:["Route simple tasks to cheap models","Measure cost per successful task","Caching patterns to cut tokens"]},{title:"Context management",ai_prompts:["Keep context under control","Summarization vs truncation tradeoffs","Design agents that stay in budget"]},{title:"Evaluation loops",ai_prompts:["Lightweight evaluation harnesses","Measure quality + cost together","Use synthetic data for improvement"]}]},{title:"Evaluation & Monitoring",description:"Know if your agent is good.",study_materials:[{title:"Success metrics",ai_prompts:["Design meaningful success metrics","Reproducible agent benchmarks","Balance auto metrics with human eval"]},{title:"Observability",ai_prompts:["Best tracing tools (LangSmith etc.)","What signals to log for debugging","Real-time performance + cost dashboards"]},{title:"Continuous improvement",ai_prompts:["Turn failures into training data","Collect real user feedback","Version control and A/B test prompts"]}] }]},{title:"Advanced Patterns",description:"Multi-agent, human oversight, scaling.",subtopics:[{title:"Multi-Agent Systems",description:"When one agent isn't enough.",study_materials:[{title:"Orchestration patterns",ai_prompts:["Compare hierarchical vs peer-to-peer topologies","Prevent communication explosion","Clear role definitions and handoffs"]},{title:"Specialist vs generalist",ai_prompts:["Narrow agents vs one powerful agent","Make specialists collaborate","Context sharing trade-offs"]},{title:"Conflict resolution",ai_prompts:["Resolve conflicting plans between agents","Voting or debate mechanisms","Maintain coherent team goals"]}]},{title:"Human-in-the-Loop",description:"Humans where it matters most.",study_materials:[{title:"Intervention points",ai_prompts:["Best places for human approval","Low-friction approval workflows","Make agents ask good questions"]},{title:"Trust & transparency",ai_prompts:["Communicate reasoning and uncertainty","Interfaces to understand agent actions","Useful audit logs for debugging"]},{title:"Escalation & override",ai_prompts:["Safe human takeover patterns","Graceful handoff without context loss","Confidence scoring for asking help"]}]},{title:"Deployment & Scaling",description:"Run reliably at scale.",study_materials:[{title:"Infrastructure",ai_prompts:["Serverless vs container trade-offs","Handle stateful agents in stateless envs","Cost-effective scaling strategies"]},{title:"Security & access",ai_prompts:["Least-privilege design for actions","Safe internal tool access","Auditing and compliance needs"]},{title:"Monitoring at scale",ai_prompts:["Alerting for health, cost and failures","Detect behavior drift over time","Rollback strategies for prompt changes"]}] }]}]};
+const demos = {
+  korean: {
+    title: "Korean Culture",
+    desc: "Understanding daily life, relationships, and traditions in modern Korea.",
+    chapters: [
+      {
+        title: "Daily Life & Food",
+        desc: "Food plays a central role in Korean daily routines and social bonding.",
+        subtopics: [
+          { title: "Table Manners", desc: "Rules around eating together show respect, especially toward elders.", leaves: [
+            "Waiting for elders before starting to eat",
+            "Using both hands when receiving food or drinks",
+            "Not sticking chopsticks upright in rice"
+          ]},
+          { title: "Fast Eating Culture", desc: "Busy lifestyle made quick meals common, though it's slowly changing.", leaves: [
+            "Short lunch breaks in workplaces",
+            "School schedules that encourage fast eating",
+            "Growing interest in slow food among youth"
+          ]},
+          { title: "Eating Out & Delivery", desc: "Modern life increased delivery and restaurant culture significantly.", leaves: [
+            "Rise of food delivery apps after COVID",
+            "Changing family meal patterns",
+            "Convenience over home cooking for many"
+          ]}
+        ]
+      },
+      {
+        title: "Relationships & Jeong",
+        desc: "Deep emotional bonds and hierarchy shape Korean social interactions.",
+        subtopics: [
+          { title: "Age Hierarchy", desc: "Age greatly affects language and respect in daily conversations.", leaves: [
+            "Different speech levels based on age",
+            "Small age gaps still matter socially",
+            "Changing attitudes among younger generations"
+          ]},
+          { title: "Group Harmony", desc: "Maintaining group atmosphere is often more important than individual opinion.", leaves: [
+            "Avoiding direct confrontation in groups",
+            "Importance of 'reading the room'",
+            "Strong team loyalty in workplaces"
+          ]},
+          { title: "Workplace Relationships", desc: "After-work drinking has been a key bonding activity for many years.", leaves: [
+            "Company dinners as relationship building",
+            "Pressure to participate in social drinking",
+            "Shifting culture among younger employees"
+          ]}
+        ]
+      },
+      {
+        title: "Tradition in Modern Life",
+        desc: "Traditional values still influence how Koreans live and celebrate today.",
+        subtopics: [
+          { title: "Family Holidays", desc: "Seollal and Chuseok remain important family gathering occasions.", leaves: [
+            "Travel rush during major holidays",
+            "Honoring ancestors through rituals",
+            "Family reunion as core value"
+          ]},
+          { title: "Respect for Elders", desc: "Respecting older people is still deeply embedded in daily behavior.", leaves: [
+            "Language and seating based on age",
+            "Listening to elders' opinions first",
+            "Gradual shift toward more equality"
+          ]},
+          { title: "Education Emphasis", desc: "Academic success continues to be seen as a major path to success.", leaves: [
+            "High pressure on students from young age",
+            "Private education spending remains high",
+            "Growing discussion about work-life balance"
+          ]}
+        ]
+      }
+    ]
+  },
 
-let curChap=null;
+  thermo: {
+    title: "Thermodynamics",
+    desc: "Core rules about energy, heat movement, and natural direction of change.",
+    chapters: [
+      {
+        title: "Heat Transfer",
+        desc: "Heat moves from hot to cold through three basic mechanisms in daily life.",
+        subtopics: [
+          { title: "Conduction", desc: "Heat transfers through direct contact between materials.", leaves: [
+            "Metal feels cold or hot faster than wood",
+            "Cooking pans conduct heat from stove",
+            "Insulation reduces unwanted conduction"
+          ]},
+          { title: "Convection", desc: "Heat moves with the flow of air or liquid.", leaves: [
+            "Warm air rising creates room circulation",
+            "Boiling water moves in circular patterns",
+            "Wind carries heat away from surfaces"
+          ]},
+          { title: "Radiation", desc: "Heat can travel through empty space as waves.", leaves: [
+            "Sun warms Earth through radiation",
+            "Infrared heaters work without contact",
+            "Heat loss from hot objects to surroundings"
+          ]}
+        ]
+      },
+      {
+        title: "Energy Laws",
+        desc: "Two fundamental laws limit what is possible with energy and processes.",
+        subtopics: [
+          { title: "Energy Conservation", desc: "Energy cannot be created or destroyed, only converted.", leaves: [
+            "Explains why perpetual motion is impossible",
+            "All machines lose some energy as heat",
+            "Helps calculate real efficiency of systems"
+          ]},
+          { title: "Entropy Increase", desc: "Natural processes move toward greater disorder over time.", leaves: [
+            "Ice melts and rooms become messy naturally",
+            "Mixing cannot be perfectly reversed",
+            "Sets limits on maximum engine efficiency"
+          ]},
+          { title: "Real World Limits", desc: "These laws create hard boundaries for technology and nature.", leaves: [
+            "No engine can be 100% efficient",
+            "Some processes are irreversible",
+            "Explains why cooling requires energy input"
+          ]}
+        ]
+      },
+      {
+        title: "Everyday Applications",
+        desc: "Thermodynamic principles power refrigerators, engines, and electricity generation.",
+        subtopics: [
+          { title: "Cooling Technology", desc: "Fridges and air conditioners move heat rather than create cold.", leaves: [
+            "Work by removing heat from inside",
+            "Require electricity to move heat out",
+            "Follow same physical rules everywhere"
+          ]},
+          { title: "Engines & Vehicles", desc: "Most engines convert only a small portion of fuel into motion.", leaves: [
+            "Typical car engine efficiency is 20-30%",
+            "Rest of energy is lost as heat",
+            "Improving efficiency remains a big challenge"
+          ]},
+          { title: "Power Generation", desc: "Most electricity is made by turning heat into motion then electricity.", leaves: [
+            "Coal, gas, and nuclear plants use heat",
+            "Limited by thermodynamic efficiency",
+            "Renewables also face similar physical limits"
+          ]}
+        ]
+      }
+    ]
+  },
 
-function showSubtopics(i){
-  const ch=d.chapters[i]; curChap=i;
-  document.getElementById('chapter-title').innerHTML=`${i+1}. ${ch.title}`;
-  const c=document.getElementById('subtopics-list'); c.innerHTML='';
-  ch.subtopics.forEach((s,si)=>{
-    const el=document.createElement('div');
-    el.className='subtopic';
-    el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><strong style="font-size:.97rem">${s.title}</strong><div style="color:#6b7280;font-size:.85rem;margin-top:2px">${s.description}</div></div><div style="color:#6366f1;font-size:.7rem;white-space:nowrap;padding-left:8px">3 prompts →</div></div>`;
-    el.onclick=()=>showPrompts(i,si);
-    c.appendChild(el);
-  });
-  document.getElementById('subtopics-panel').style.display='block';
-  document.getElementById('subtopics-panel').scrollIntoView({behavior:'smooth',block:'start'});
-}
-function hideSubtopics(){document.getElementById('subtopics-panel').style.display='none'}
-function showPrompts(ci,si){
-  const m=d.chapters[ci].subtopics[si];
-  document.getElementById('modal-title').innerText=m.title;
-  const ul=document.getElementById('modal-prompts'); ul.innerHTML='';
-  m.ai_prompts.forEach((p,idx)=>{
-    const li=document.createElement('li');
-    li.style.cssText='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 11px;margin-bottom:5px;font-size:.88rem';
-    li.innerHTML=`<strong>${idx+1}.</strong> ${p}`;
-    ul.appendChild(li);
-  });
-  document.getElementById('prompt-modal').style.display='flex';
-}
-function hideModal(){document.getElementById('prompt-modal').style.display='none'}
-function copyPrompt(){
-  const t=document.getElementById('master-prompt').innerText;
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.querySelector('.copy-btn');
-    const old=b.innerText; b.innerText='Copied!';
-    setTimeout(()=>b.innerText=old,1600);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-    alert('Prompt copied!');
-  });
-}
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    const m=document.getElementById('prompt-modal');
-    if(m.style.display==='flex') hideModal();
-    else hideSubtopics();
+  habits: {
+    title: "Building Good Habits",
+    desc: "How small repeated actions can create meaningful long-term change in life.",
+    chapters: [
+      {
+        title: "How Habits Form",
+        desc: "Habits are automatic behaviors built through repetition and simple loops.",
+        subtopics: [
+          { title: "Cue-Routine-Reward", desc: "Every habit follows a loop of trigger, action, and benefit.", leaves: [
+            "Phone notification acts as a cue",
+            "Checking social media is the routine",
+            "Dopamine hit becomes the reward"
+          ]},
+          { title: "Start Extremely Small", desc: "Tiny actions are much easier to repeat consistently than big goals.", leaves: [
+            "Do 1 push-up instead of 30",
+            "Read one page instead of one chapter",
+            "Small wins build identity and momentum"
+          ]},
+          { title: "Environment Design", desc: "Making good habits easy and bad habits hard increases success rate.", leaves: [
+            "Put running shoes by the door",
+            "Delete distracting apps from home screen",
+            "Prepare healthy food in visible places"
+          ]}
+        ]
+      },
+      {
+        title: "Common Mistakes",
+        desc: "Most people fail because they rely on motivation or try to change too much.",
+        subtopics: [
+          { title: "Motivation Dependency", desc: "Motivation is unreliable. Systems work better than feelings.", leaves: [
+            "Feeling motivated is temporary",
+            "Good systems work even on bad days",
+            "Environment beats willpower long-term"
+          ]},
+          { title: "Too Many Changes", desc: "Changing several habits at once usually leads to failure.", leaves: [
+            "Focus on one or two habits maximum",
+            "Build one habit until it becomes automatic",
+            "Stack new habits on existing ones later"
+          ]},
+          { title: "All-or-Nothing Thinking", desc: "Missing one day often causes people to give up completely.", leaves: [
+            "One miss is normal and acceptable",
+            "Never miss two days in a row",
+            "Progress is not all or nothing"
+          ]}
+        ]
+      },
+      {
+        title: "Making It Sustainable",
+        desc: "Long-term habits require identity and systems that survive low motivation.",
+        subtopics: [
+          { title: "Identity Shift", desc: "Lasting change comes from changing how you see yourself.", leaves: [
+            "Stop saying 'I want to run'",
+            "Start thinking 'I am a runner'",
+            "Identity creates stronger internal drive"
+          ]},
+          { title: "Never Miss Twice", desc: "The real rule for consistency is avoiding two consecutive misses.", leaves: [
+            "One bad day happens to everyone",
+            "Two bad days in a row breaks momentum",
+            "Protect the streak more than perfection"
+          ]},
+          { title: "Regular Review", desc: "Check which habits are actually helping and adjust when needed.", leaves: [
+            "Some habits stop serving you over time",
+            "Review every few months",
+            "Drop or change habits that no longer fit"
+          ]}
+        ]
+      }
+    ]
   }
-});
-document.getElementById('tree-root').addEventListener('click',hideSubtopics);
+};
+
+function loadDemo(key) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+  const data = demos[key];
+  renderAccordion(data);
+}
+
+function switchDemo(key, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadDemo(key);
+}
+
+function renderAccordion(data) {
+  const area = document.getElementById('demo-area');
+  let html = '';
+
+  // Root
+  html += `
+    <div class="root">
+      <div class="box-title">${data.title}</div>
+      <div class="box-desc" style="margin-top:6px;">${data.desc}</div>
+    </div>
+  `;
+
+  // Chapters
+  data.chapters.forEach((chapter, cIndex) => {
+    html += `
+      <div class="chapter" id="chapter-${cIndex}">
+        <div class="chapter-header" onclick="toggleChapter(${cIndex})">
+          <div>
+            <span class="box-title">${chapter.title}</span>
+            <div class="box-desc" style="margin-top:4px; font-size:0.9rem;">${chapter.desc}</div>
+          </div>
+          <span class="toggle">▼</span>
+        </div>
+        <div class="chapter-content">
+    `;
+
+    // Subtopics
+    chapter.subtopics.forEach((sub, sIndex) => {
+      html += `
+        <div class="subtopic" id="sub-${cIndex}-${sIndex}">
+          <div class="subtopic-header" onclick="toggleSubtopic(${cIndex}, ${sIndex})">
+            <div>
+              <span class="box-title">${sub.title}</span>
+              <div style="font-size:0.85rem; color:#555; margin-top:3px;">${sub.desc}</div>
+            </div>
+            <span class="toggle">▼</span>
+          </div>
+          <div class="subtopic-content">
+      `;
+
+      // Leaves
+      sub.leaves.forEach(leaf => {
+        html += `<div class="leaf">• ${leaf}</div>`;
+      });
+
+      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  area.innerHTML = html;
+}
+
+function toggleChapter(index) {
+  const chapter = document.getElementById(`chapter-${index}`);
+  chapter.classList.toggle('open');
+}
+
+function toggleSubtopic(cIndex, sIndex) {
+  const sub = document.getElementById(`sub-${cIndex}-${sIndex}`);
+  sub.classList.toggle('open');
+}
+
+window.onload = function() {
+  const firstBtn = document.querySelector('.tab-btn');
+  if (firstBtn) firstBtn.classList.add('active');
+  
+  loadDemo('korean');
+};
 </script>
 </body>
 </html>
