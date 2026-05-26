@@ -14,5 +14,4 @@ To make something 'knows', this will take many resource. But we can make 'ready 
 
 ## Usage
 
---------------
 Copy skill.md to any AI and get 'short compacted knowledge' and then you(human) can use it anytime locally!!
